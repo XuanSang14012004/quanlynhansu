@@ -1,0 +1,66 @@
+ /* CSS chỉnh cho giống ảnh */
+        .group-list-container {
+            border-right: 1px solid #e7ecf1;
+            padding-right: 0;
+            min-height: 500px;
+        }
+
+        .group-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f4f4f4;
+            display: block;
+            color: #555;
+            text-decoration: none !important;
+            position: relative;
+        }
+
+        .group-item:hover {
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* Nhóm đang được chọn */
+        .group-item.active {
+            background-color: #fff;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Dấu tích giả lập giống ảnh bên trái */
+        .group-item .icon-state {
+            margin-right: 8px;
+            color: #3598dc;
+            /* Màu xanh */
+        }
+
+        .group-item.active::after {
+            /* Mũi tên chỉ sang phải */
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 50%;
+            margin-top: -8px;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 8px solid #3598dc;
+        }
+
+        /* Phần tiêu đề đỏ bên phải */
+        .module-title {
+            color: #e7505a;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 5px;
+        }
+
+        .module-icon {
+            margin-right: 5px;
+        }
+
+        .permission-item {
+            margin-bottom: 5px;
+            font-size: 13px;
+        }

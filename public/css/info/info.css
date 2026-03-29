@@ -1,0 +1,245 @@
+:root {
+    --primary: #0f4c81;
+    --primary-color: #2563eb;
+    /* Màu xanh doanh nghiệp */
+    --secondary: #206bc4;
+    --light-bg: #f4f6f8;
+    --text-main: #2c3e50;
+    --text-muted: #6c757d;
+    --border-radius: 12px;
+    --primary-gradient: linear-gradient(135deg, #0f4c81 0%, #206bc4 100%);
+    /* Gradient cho nút */
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-main);
+}
+
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-link {
+    color: var(--text-main);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--secondary) !important;
+}
+
+/* Nút đăng nhập/Dashboard (Style Gradient) */
+.btn-login {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 0.6rem 1.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(15, 76, 129, 0.3);
+    color: white;
+}
+
+.company-header-bg {
+    /* Margin-top PHẢI BẰNG chiều cao của Header (80px) */
+    margin-top: 80px;
+
+    background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%);
+    height: 250px;
+    position: relative;
+
+    /* Margin âm để nội dung bên dưới trồi lên */
+    margin-bottom: -80px;
+
+    /* Reset padding/margin mặc định của thẻ div */
+    padding: 0;
+}
+
+.header-content {
+    /* Căn chỉnh nội dung chữ bên trong banner */
+    padding-top: 60px;
+    color: #fff;
+    /* Chữ màu trắng */
+    text-align: center;
+}
+
+/* --- 3. CONTENT CARDS (Phần nội dung chính) --- */
+.card-custom {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    background: #fff;
+    overflow: hidden;
+}
+
+.card-header-custom {
+    background-color: #fff;
+    border-bottom: 1px solid #edf2f7;
+    padding: 20px 25px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Logo Box bên trái */
+.logo-box {
+    background: #fff;
+    padding: 30px;
+    text-align: center;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.logo-box img {
+    max-width: 180px;
+    height: auto;
+    object-fit: contain;
+}
+
+.company-title-sidebar {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: 15px;
+    color: var(--text-main);
+}
+
+/* Danh sách thông tin (List) */
+.info-list {
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
+
+.info-list li {
+    padding: 15px 25px;
+    border-bottom: 1px solid #f4f6f8;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.info-list li:last-child {
+    border-bottom: none;
+}
+
+.info-list i {
+    color: var(--secondary);
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+.info-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.info-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.info-value a {
+    color: var(--text-main);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.info-value a:hover {
+    color: var(--secondary);
+}
+
+/* Bảng thông tin người đại diện */
+.table-custom tr td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.table-custom tr td:first-child {
+    width: 35%;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.table-custom tr td:last-child {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Nút nổi (Floating Actions) */
+.fab-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-fab {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+
+.btn-fab:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+.btn-edit {
+    background-color: var(--secondary);
+}
+
+.btn-back {
+    background-color: #6c757d;
+}
+
+@media (max-width: 768px) {
+    .company-header-bg {
+        height: 200px;
+        margin-bottom: -50px;
+    }
+
+    .header-content h1 {
+        font-size: 1.8rem;
+    }
+}

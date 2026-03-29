@@ -1,0 +1,326 @@
+/* CSS Đã chỉnh sửa để khớp với Dashboard */
+.history-wrapper {
+    /* Xóa min-height: 100vh để tránh vỡ layout dọc */
+    padding: 0;
+}
+
+.history-card {
+    background: #fff;
+    border-radius: 15px;
+    /* Giảm bo góc một chút cho hợp */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 1px solid #eef1f5;
+    animation: slideUp 0.5s ease-out;
+    margin-bottom: 30px;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.history-header {
+    /* Header Gradient */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 25px 30px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hiệu ứng nền động */
+.history-header::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 70%
+    );
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.history-header h2 {
+    margin: 0;
+    font-size: 24px;
+    /* Chỉnh lại font size cho cân đối */
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.history-header i {
+    font-size: 28px;
+    animation: rotate 10s linear infinite;
+    /* Quay chậm lại cho đỡ rối mắt */
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.search-section {
+    background: #f8f9fa;
+    /* Nền nhẹ thay vì gradient để dễ đọc */
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.form-group-modern label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.form-control-modern {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #dfe3e8;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    height: 42px;
+    /* Chiều cao cố định cho đẹp */
+}
+
+.form-control-modern:focus {
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+}
+
+.btn-modern {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    margin-top: 24px;
+    /* Căn nút thẳng hàng với input */
+}
+
+.btn-search {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-search:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-reset {
+    background: #fff;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.btn-reset:hover {
+    background: #f1f1f1;
+    color: #333;
+    text-decoration: none;
+}
+
+.table-container {
+    padding: 0;
+}
+
+.table-modern {
+    width: 100%;
+    border-collapse: collapse;
+    /* Quay về collapse để kẻ dòng đẹp hơn trong admin */
+}
+
+.table-modern thead th {
+    background: #fdfdfd;
+    color: #764ba2;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 15px 20px;
+    border-bottom: 2px solid #eef1f5;
+}
+
+.table-modern tbody td {
+    padding: 15px 20px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f4f6f9;
+    color: #555;
+}
+
+.table-modern tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-modern tbody tr:hover {
+    background-color: #fcfcfc;
+}
+
+/* User Info Style */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #eef1f5;
+    color: #764ba2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.user-details .user-name {
+    font-weight: 600;
+    color: #333;
+    display: block;
+}
+
+.user-details .user-email {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Badges */
+.action-badge {
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-login {
+    background: #e6fffa;
+    color: #047857;
+    border: 1px solid #b7eb8f;
+}
+
+.badge-logout {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #ffa39e;
+}
+
+.ip-address {
+    font-family: monospace;
+    background: #f1f2f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    gap: 8px;
+    /* Khoảng cách giữa các nút */
+}
+
+.page-item {
+    list-style: none;
+}
+
+.page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 15px;
+    border-radius: 50px !important;
+    /* Bo tròn hình viên thuốc */
+    border: 1px solid #e2e8f0;
+    background-color: #fff;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Hiệu ứng khi di chuột vào */
+.page-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: 0 5px 15px rgba(15, 76, 129, 0.15);
+}
+
+/* Trạng thái đang chọn (Active) */
+.page-item.active .page-link {
+    background: var(--primary-gradient);
+    /* Dùng màu gradient xanh của web */
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 5px 15px rgba(15, 76, 129, 0.3);
+}
+
+/* Trạng thái bị vô hiệu hóa (Disabled - ví dụ nút Previous ở trang 1) */
+.page-item.disabled .page-link {
+    background-color: #f8f9fa;
+    color: #cbd5e1;
+    border-color: #f1f5f9;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Chỉnh icon mũi tên cho đẹp */
+.page-link svg {
+    width: 16px;
+    height: 16px;
+}
