@@ -286,11 +286,16 @@
 @endsection
 
 @section('script')
+<script>
+    window.BASE_URL = "{{ url('') }}";
+</script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script type="text/javascript">
-    const API_URL = '/api/my-tasks'; 
+    const API_URL = window.BASE_URL + '/api/my-tasks';
     let currentTaskId = null;
     let activeDateFilter = 'all'; // Đổi mặc định thành Tất cả
 

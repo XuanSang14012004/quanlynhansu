@@ -1,7 +1,7 @@
 /**
  * TASK MANAGER LOGIC - FINAL FIXED VERSION
  */
-
+window.BASE_URL = window.location.origin + '/datatech/public';
 document.addEventListener('DOMContentLoaded', function() {
     loadUsers(); 
     loadTasks();
@@ -111,6 +111,7 @@ function clearFilters() {
 // 2. HÀM TẢI DỮ LIỆU & RENDER (QUAN TRỌNG NHẤT)
 // =============================================================
 function loadTasks() {
+    
     // 1. XÁC ĐỊNH ĐANG Ở TAB NÀO?
     const myTasksTab = document.getElementById('myTasksTab');
     const isMyTab = myTasksTab && window.getComputedStyle(myTasksTab).display !== 'none';
@@ -163,8 +164,8 @@ function loadTasks() {
     }
 
     // 5. GỌI API
-    let url = `/api/tasks?keyword=${encodeURIComponent(keyword)}&assignee_id=${assigneeId}&status=${status}&date_filter=${dateFilter}&from_date=${fromDate}&to_date=${toDate}`;
-    
+    let url = `${BASE_URL}/api/tasks?keyword=${encodeURIComponent(keyword)}&assignee_id=${assigneeId}&status=${status}&date_filter=${dateFilter}&from_date=${fromDate}&to_date=${toDate}`;
+    console.log(url);
     let tbody = document.getElementById(tbodyId);
     if(tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
 
@@ -239,7 +240,7 @@ function switchTab(tabName) {
 }
 
 function loadUsers() {
-    fetch('/api/users-list')
+    fetch(BASE_URL + '/api/users-list')
         .then(res => res.json())
         .then(users => {
             let filterSelect = document.getElementById('assigneeFilter');
@@ -282,7 +283,9 @@ function saveTask() {
         return;
     }
 
-    let url = id ? `/api/tasks/${id}` : '/api/tasks';
+    let url = id 
+    ? `${BASE_URL}/api/tasks/${id}` 
+    : `${BASE_URL}/api/tasks`;
     if (id) formData.append('_method', 'PUT');
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -307,7 +310,7 @@ function saveTask() {
 function executeDelete() {
     let id = document.getElementById('deleteTaskId').value;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-    fetch(`/api/tasks/${id}`, {
+    fetch(`${BASE_URL}/api/tasks/${id}`, {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': csrfToken }
     }).then(res => res.json()).then(data => {
@@ -319,7 +322,7 @@ function confirmComplete() {
     let id = document.getElementById('completeTaskId').value;
     let note = document.getElementById('completionNote').value;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-    fetch(`/api/tasks/${id}/complete`, {
+    fetch(`${BASE_URL}/api/tasks/${id}/complete`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken},
         body: JSON.stringify({ note: note })
@@ -372,7 +375,7 @@ function openTaskDialog() {
 // ĐÃ SỬA: Nạp thông tin lúc Sửa Công Việc (Set Select2)
 // =============================================================
 function editTask(id) {
-    fetch(`/api/tasks/${id}`).then(res => res.json()).then(task => {
+    fetch(`${BASE_URL}/api/tasks/${id}`).then(res => res.json()).then(task => {
         document.getElementById('taskId').value = task.id;
         document.getElementById('taskContent').value = task.title;
         document.getElementById('taskDescription').value = task.description || '';
@@ -398,7 +401,7 @@ function editTask(id) {
 }
 
 function viewTask(id) {
-    fetch(`/api/tasks/${id}`).then(res => res.json()).then(task => {
+    fetch(`${BASE_URL}/api/tasks/${id}`).then(res => res.json()).then(task => {
         document.getElementById('viewContent').innerText = task.title;
         document.getElementById('viewDescription').innerText = task.description || '';
         showModalSafely('viewModal');
@@ -475,4 +478,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+});
+$(document).ready(function() {
+    $('#taskAssignee').select2({
+        placeholder: "Chọn nhân viên",
+        width: '100%'
+    });
 });
