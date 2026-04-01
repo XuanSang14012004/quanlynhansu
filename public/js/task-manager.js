@@ -202,6 +202,7 @@ function loadTasks() {
                 buttons += `<button class="btn btn-sm btn-danger me-1" onclick="openDeleteModal(${task.id})"><i class="bi bi-trash"></i></button>`;
                 if (task.status == 0) {
                     buttons += `<button class="btn btn-sm btn-success" onclick="openCompleteModal(${task.id}, '${task.title.replace(/'/g, "\\'")}')" title="Xác nhận hoàn thành"><i class="bi bi-check-lg"></i></button>`;
+                    
                 }
 
                 let timeRange = (task.start_time ? task.start_time.substring(0, 5) : '--') + ' - ' + (task.end_time ? task.end_time.substring(0, 5) : '--');
@@ -361,10 +362,9 @@ function confirmNotDone() {
 function getStatusBadge(status) {
     if (status == 0) return '<span class="badge bg-warning text-dark">Chờ xử lý</span>';
     if (status == 1) return '<span class="badge bg-success">Đã hoàn thành</span>';
-    if (status == 2) {
-        return '<span class="badge bg-danger">Không thực hiện</span>'; 
-    }
-    return '<span class="badge bg-danger">Hết hạn</span>';
+    if (status == 2) return '<span class="badge bg-secondary">Hết hạn</span>';
+    if (status == 3) return '<span class="badge bg-danger">Không thực hiện</span>';
+    return '';
 }
 
 function formatDate(dateString) {

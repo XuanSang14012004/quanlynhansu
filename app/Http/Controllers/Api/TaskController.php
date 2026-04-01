@@ -190,7 +190,7 @@ class TaskController extends Controller
 {
     $task = Task::findOrFail($id);
 
-    $task->status = 2; // 
+    $task->status = 3; // 
     $task->completion_note = $request->note;
     $task->completed_at = now();
 

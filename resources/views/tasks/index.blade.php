@@ -849,6 +849,7 @@
                                         <option value="0">Chờ xử lý</option>
                                         <option value="1">Hoàn thành</option>
                                         <option value="2">Hết hạn</option>
+                                        <option value="3">Không thực hiện</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
