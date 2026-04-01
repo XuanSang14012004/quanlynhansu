@@ -32,7 +32,7 @@
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    
+
 
     /* ==================== PAGE HEADER ==================== */
 
@@ -419,18 +419,15 @@
         background: var(--white);
     }
 
-    .table thead {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #0b5ed7 100%);
-        color: var(--white);
-    }
+
 
     .table-primary th {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #0b5ed7 100%);
-        color: var(--white);
+        background: #dceafe;
+        color: black;
         border: none;
         font-weight: 600;
         padding: 1rem;
-        text-transform: uppercase;
+
         font-size: 0.85rem;
         letter-spacing: 0.5px;
     }
@@ -688,7 +685,53 @@
         display: block !important;
     }
 
-    
+    /* ==================== DATE FILTER - TAB STYLE ==================== */
+
+    .btn-group {
+        display: inline-flex;
+        border: 1px solid #2563eb;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    /* Ẩn radio */
+    .btn-check {
+        display: none;
+    }
+
+    /* Button */
+    .btn-group .btn {
+        border: none;
+        background: #fff;
+        color: #2563eb;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-right: 1px solid #2563eb;
+        border-radius: 0 !important;
+    }
+
+    /* Bỏ border phải của thằng cuối */
+    .btn-group .btn:last-child {
+        border-right: none;
+    }
+
+    /* Hover */
+    .btn-group .btn:hover {
+        background: #eff6ff;
+    }
+
+    /* Active */
+    .btn-check:checked+.btn {
+        background: #2563eb;
+        color: #fff;
+    }
+
+    /* Icon */
+    .btn-group .btn i {
+        margin-right: 6px;
+    }
 </style>
 @endsection
 
@@ -922,8 +965,8 @@
                             Người thực hiện <span style="color: #dc3545;">*</span>
                         </label>
                         <select id="taskAssignee" multiple required style="width: 100%; border: 1px solid #ced4da; border-radius: 4px; padding: 10px 12px; font-size: 14px; outline: none; background-color: #fff; cursor: pointer;">
-    {{-- Các option user sẽ được load qua JS --}}
-</select>
+                            {{-- Các option user sẽ được load qua JS --}}
+                        </select>
                     </div>
 
                     <div style="margin-bottom: 20px;">
@@ -968,7 +1011,7 @@
                 <h5 class="modal-title text-danger">
                     <i class="bi bi-exclamation-triangle"></i> Xác nhận xóa
                 </h5>
-                
+
             </div>
             <div class="modal-body">
                 <input type="hidden" id="deleteTaskId">
@@ -998,21 +1041,22 @@
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title">
-                    <i class="bi bi-check-circle"></i> Báo cáo hoàn thành
+                    <i class="bi bi-check-circle"></i> Xác nhận công việc
                 </h5>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="completeTaskId">
-                <div class="alert alert-success d-flex align-items-center" role="alert">
-                    <i class="bi bi-info-circle-fill me-2"></i>
-                    <div>
-                        Xác nhận hoàn thành công việc: <br>
+                <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <span>
+                        Công việc:<br>
                         <strong id="completeTaskContent"></strong>
-                    </div>
+                    </span>
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
-                        <i class="bi bi-journal-text"></i> Ghi chú kết quả:
+                        <i class="bi bi-journal-text"></i> Ghi chú:
                     </label>
                     <textarea class="form-control" id="completionNote" rows="4" placeholder="Nhập kết quả công việc, ghi chú hoàn thành..."></textarea>
                 </div>
@@ -1020,6 +1064,9 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     <i class="bi bi-x-circle"></i> Đóng
+                </button>
+                <button type="button" class="btn btn-danger" onclick="confirmNotDone()">
+                    <i class="bi bi-x-octagon"></i> Không thực hiện
                 </button>
                 <button type="button" class="btn btn-success" onclick="confirmComplete()">
                     <i class="bi bi-send"></i> Hoàn thành
@@ -1053,11 +1100,11 @@
 
 
     document.addEventListener('DOMContentLoaded', function() {
-    $('#taskAssignee').select2({
-        placeholder: "Chọn người thực hiện...",
-        allowClear: true,
-        width: '100%' // Đảm bảo full width
-    });
+        $('#taskAssignee').select2({
+            placeholder: "Chọn người thực hiện...",
+            allowClear: true,
+            width: '100%' // Đảm bảo full width
+        });
         // Từ ngày
         flatpickr("#fromDate", {
             dateFormat: "Y-m-d", // ✅ GỬI yyyy-mm-dd (backend Laravel cần format này)

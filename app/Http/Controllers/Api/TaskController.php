@@ -185,6 +185,19 @@ class TaskController extends Controller
         }
         return response()->json(['success' => false], 404);
     }
+    //Không thực hiện
+    public function notDone(Request $request, $id)
+{
+    $task = Task::findOrFail($id);
+
+    $task->status = 2; // 
+    $task->completion_note = $request->note;
+    $task->completed_at = now();
+
+    $task->save();
+
+    return response()->json(['success' => true]);
+}
 
     // 6. Chi tiết công việc
     public function show($id)

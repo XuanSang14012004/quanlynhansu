@@ -2,8 +2,8 @@
  * TASK MANAGER LOGIC - FINAL FIXED VERSION
  */
 window.BASE_URL = window.location.origin + '/datatech/public';
-document.addEventListener('DOMContentLoaded', function() {
-    loadUsers(); 
+document.addEventListener('DOMContentLoaded', function () {
+    loadUsers();
     loadTasks();
 });
 
@@ -23,28 +23,28 @@ function applyMyFilters() {
 function handleDateFilterChange() {
     const customDiv = document.getElementById('customDateRange');
     const customRadio = document.getElementById('custom');
-    
+
     if (customRadio && customRadio.checked) {
-        if(customDiv) customDiv.classList.remove('d-none');
+        if (customDiv) customDiv.classList.remove('d-none');
     } else {
-        if(customDiv) customDiv.classList.add('d-none');
-        loadTasks(); 
+        if (customDiv) customDiv.classList.add('d-none');
+        loadTasks();
     }
 }
 
 // Xử lý ẩn/hiện ô chọn ngày của TAB CỦA TÔI
 function handleMyDateFilterChange() {
-   const customDiv = document.getElementById('myCustomDateRange');
-   const customRadio = document.getElementById('myCustom');
+    const customDiv = document.getElementById('myCustomDateRange');
+    const customRadio = document.getElementById('myCustom');
 
-   if (customRadio && customRadio.checked) {
-       if(customDiv) customDiv.classList.remove('d-none');
-   } else {
-       if(customDiv) customDiv.classList.add('d-none');
-       
-       // --- ĐÃ SỬA LỖI Ở ĐÂY: Gọi loadTasks() thay vì loadMyTasks() ---
-       loadTasks(); 
-   }
+    if (customRadio && customRadio.checked) {
+        if (customDiv) customDiv.classList.remove('d-none');
+    } else {
+        if (customDiv) customDiv.classList.add('d-none');
+
+        // --- ĐÃ SỬA LỖI Ở ĐÂY: Gọi loadTasks() thay vì loadMyTasks() ---
+        loadTasks();
+    }
 }
 
 // Xóa trắng bộ lọc - ✅ HỖ TRỢ FLATPICKR
@@ -52,17 +52,17 @@ function clearFilters() {
     // Reset ô tìm kiếm chung
     const searchEl = document.getElementById('searchText');
     if (searchEl) searchEl.value = '';
-    
+
     // Reset Tab Chung
-    if(document.getElementById('assigneeFilter')) document.getElementById('assigneeFilter').value = 'all';
-    if(document.getElementById('statusFilter')) document.getElementById('statusFilter').value = 'all';
-    if(document.getElementById('all')) document.getElementById('all').checked = true;
-    if(document.getElementById('customDateRange')) document.getElementById('customDateRange').classList.add('d-none');
-    
+    if (document.getElementById('assigneeFilter')) document.getElementById('assigneeFilter').value = 'all';
+    if (document.getElementById('statusFilter')) document.getElementById('statusFilter').value = 'all';
+    if (document.getElementById('all')) document.getElementById('all').checked = true;
+    if (document.getElementById('customDateRange')) document.getElementById('customDateRange').classList.add('d-none');
+
     // ✅ XÓA FLATPICKR - Kiểm tra xem có dùng Flatpickr không
     const fromDateEl = document.getElementById('fromDate');
     const toDateEl = document.getElementById('toDate');
-    
+
     if (fromDateEl) {
         // Kiểm tra xem có Flatpickr instance không
         if (fromDateEl._flatpickr) {
@@ -71,7 +71,7 @@ function clearFilters() {
             fromDateEl.value = ''; // Xóa input thường
         }
     }
-    
+
     if (toDateEl) {
         if (toDateEl._flatpickr) {
             toDateEl._flatpickr.clear(); // ✅ Xóa bằng method của Flatpickr
@@ -81,12 +81,12 @@ function clearFilters() {
     }
 
     // Reset Tab Của Tôi (nếu có)
-    if(document.getElementById('myAll')) document.getElementById('myAll').checked = true;
-    if(document.getElementById('myCustomDateRange')) document.getElementById('myCustomDateRange').classList.add('d-none');
-    
+    if (document.getElementById('myAll')) document.getElementById('myAll').checked = true;
+    if (document.getElementById('myCustomDateRange')) document.getElementById('myCustomDateRange').classList.add('d-none');
+
     const myFromDateEl = document.getElementById('myFromDate');
     const myToDateEl = document.getElementById('myToDate');
-    
+
     if (myFromDateEl) {
         if (myFromDateEl._flatpickr) {
             myFromDateEl._flatpickr.clear();
@@ -94,7 +94,7 @@ function clearFilters() {
             myFromDateEl.value = '';
         }
     }
-    
+
     if (myToDateEl) {
         if (myToDateEl._flatpickr) {
             myToDateEl._flatpickr.clear();
@@ -102,7 +102,7 @@ function clearFilters() {
             myToDateEl.value = '';
         }
     }
-    
+
     // Tải lại
     loadTasks();
 }
@@ -111,7 +111,7 @@ function clearFilters() {
 // 2. HÀM TẢI DỮ LIỆU & RENDER (QUAN TRỌNG NHẤT)
 // =============================================================
 function loadTasks() {
-    
+
     // 1. XÁC ĐỊNH ĐANG Ở TAB NÀO?
     const myTasksTab = document.getElementById('myTasksTab');
     const isMyTab = myTasksTab && window.getComputedStyle(myTasksTab).display !== 'none';
@@ -150,10 +150,10 @@ function loadTasks() {
     } else {
         // Lấy giá trị từ Radio button tương ứng với Tab đang mở
         const checkedRadio = document.querySelector(`input[name="${dateRadioName}"]:checked`);
-        
+
         if (checkedRadio) {
             dateFilter = checkedRadio.value;
-            
+
             // ✅ CHỈ LẤY NGÀY KHI CHỌN "CUSTOM"
             if (dateFilter === 'custom') {
                 fromDate = document.getElementById(fromDateId)?.value || '';
@@ -167,14 +167,14 @@ function loadTasks() {
     let url = `${BASE_URL}/api/tasks?keyword=${encodeURIComponent(keyword)}&assignee_id=${assigneeId}&status=${status}&date_filter=${dateFilter}&from_date=${fromDate}&to_date=${toDate}`;
     console.log(url);
     let tbody = document.getElementById(tbodyId);
-    if(tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
+    if (tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
 
     fetch(url)
         .then(res => res.json())
         .then(tasks => {
-            if(!tbody) return;
+            if (!tbody) return;
             tbody.innerHTML = '';
-            
+
             if (tasks.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-muted"><i>Không tìm thấy kết quả nào.</i></td></tr>`;
                 return;
@@ -182,21 +182,21 @@ function loadTasks() {
 
             tasks.forEach(task => {
                 let statusBadge = getStatusBadge(task.status);
-                
-                
+
+
                 let assigneeHtml = '';
 
-// Kiểm tra nếu mảng assignees có tồn tại và có ít nhất 1 người
-if (task.assignees && task.assignees.length > 0) {
-    // Lấy ra tên của tất cả những người thực hiện và ghép lại bằng dấu phẩy
-    let names = task.assignees.map(user => user.name).join(', ');
-    
-    // Nếu ở tab "Của tôi", có thể ghi thêm chữ "Tôi" nếu muốn, nhưng ghép tên là chuẩn nhất
-    assigneeHtml = `<span class="fw-bold text-dark">${names}</span>`;
-} else {
-    assigneeHtml = '<span class="text-muted fst-italic">Chưa giao</span>';
-}
-                
+                // Kiểm tra nếu mảng assignees có tồn tại và có ít nhất 1 người
+                if (task.assignees && task.assignees.length > 0) {
+                    // Lấy ra tên của tất cả những người thực hiện và ghép lại bằng dấu phẩy
+                    let names = task.assignees.map(user => user.name).join(', ');
+
+                    // Nếu ở tab "Của tôi", có thể ghi thêm chữ "Tôi" nếu muốn, nhưng ghép tên là chuẩn nhất
+                    assigneeHtml = `<span class="fw-bold text-dark">${names}</span>`;
+                } else {
+                    assigneeHtml = '<span class="text-muted fst-italic">Chưa giao</span>';
+                }
+
                 let buttons = '';
                 buttons += `<button class="btn btn-sm btn-primary me-1" onclick="editTask(${task.id})"><i class="bi bi-pencil"></i></button>`;
                 buttons += `<button class="btn btn-sm btn-danger me-1" onclick="openDeleteModal(${task.id})"><i class="bi bi-trash"></i></button>`;
@@ -204,7 +204,7 @@ if (task.assignees && task.assignees.length > 0) {
                     buttons += `<button class="btn btn-sm btn-success" onclick="openCompleteModal(${task.id}, '${task.title.replace(/'/g, "\\'")}')" title="Xác nhận hoàn thành"><i class="bi bi-check-lg"></i></button>`;
                 }
 
-                let timeRange = (task.start_time ? task.start_time.substring(0,5) : '--') + ' - ' + (task.end_time ? task.end_time.substring(0,5) : '--');
+                let timeRange = (task.start_time ? task.start_time.substring(0, 5) : '--') + ' - ' + (task.end_time ? task.end_time.substring(0, 5) : '--');
 
                 let row = `
                     <tr>
@@ -224,17 +224,17 @@ if (task.assignees && task.assignees.length > 0) {
         })
         .catch(err => {
             console.error(err);
-            if(tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Lỗi API: ${err.message}</td></tr>`;
+            if (tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Lỗi API: ${err.message}</td></tr>`;
         });
 }
 
 function switchTab(tabName) {
     document.querySelectorAll('.module-tab').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-    
+
     const targetTab = document.getElementById(tabName + 'Tab');
-    if(targetTab) targetTab.style.display = 'block';
-    
+    if (targetTab) targetTab.style.display = 'block';
+
     // GỌI HÀM LOAD LẠI DỮ LIỆU KHI CHUYỂN TAB
     loadTasks();
 }
@@ -247,8 +247,8 @@ function loadUsers() {
             let formSelect = document.getElementById('taskAssignee');
             let html = '';
             users.forEach(u => html += `<option value="${u.id}">${u.name}</option>`);
-            if(filterSelect) filterSelect.innerHTML = '<option value="all">Tất cả nhân viên</option>' + html;
-            if(formSelect) formSelect.innerHTML = html; // Đã bỏ "Chọn nhân viên" vì Select2 tự xử lý placeholder
+            if (filterSelect) filterSelect.innerHTML = '<option value="all">Tất cả nhân viên</option>' + html;
+            if (formSelect) formSelect.innerHTML = html; // Đã bỏ "Chọn nhân viên" vì Select2 tự xử lý placeholder
         })
         .catch(err => console.error(err));
 }
@@ -259,9 +259,9 @@ function loadUsers() {
 function saveTask() {
     let id = document.getElementById('taskId').value;
     let form = document.getElementById('taskForm');
-    
-    if(!document.getElementById('taskContent').value) { alert('Vui lòng nhập tên công việc'); return; }
-    if(!document.getElementById('taskStartDate').value) { alert('Vui lòng chọn ngày bắt đầu'); return; }
+
+    if (!document.getElementById('taskContent').value) { alert('Vui lòng nhập tên công việc'); return; }
+    if (!document.getElementById('taskStartDate').value) { alert('Vui lòng chọn ngày bắt đầu'); return; }
 
     let formData = new FormData(form);
     formData.append('title', document.getElementById('taskContent').value);
@@ -273,9 +273,9 @@ function saveTask() {
     formData.append('status', document.getElementById('taskStatus').value);
 
     // Lấy mảng ID người thực hiện từ Select2
-    let assignees = $('#taskAssignee').val(); 
+    let assignees = $('#taskAssignee').val();
     if (assignees && assignees.length > 0) {
-        assignees.forEach(function(userId) {
+        assignees.forEach(function (userId) {
             formData.append('assignees[]', userId);
         });
     } else {
@@ -283,9 +283,9 @@ function saveTask() {
         return;
     }
 
-    let url = id 
-    ? `${BASE_URL}/api/tasks/${id}` 
-    : `${BASE_URL}/api/tasks`;
+    let url = id
+        ? `${BASE_URL}/api/tasks/${id}`
+        : `${BASE_URL}/api/tasks`;
     if (id) formData.append('_method', 'PUT');
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -295,16 +295,16 @@ function saveTask() {
         headers: { 'X-CSRF-TOKEN': csrfToken },
         body: formData
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            hideModalSafely('taskModal');
-            loadTasks();
-            alert('Thành công!');
-        } else {
-            alert('Lỗi: ' + (data.message || 'Kiểm tra lại dữ liệu'));
-        }
-    });
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                hideModalSafely('taskModal');
+                loadTasks();
+                alert('Thành công!');
+            } else {
+                alert('Lỗi: ' + (data.message || 'Kiểm tra lại dữ liệu'));
+            }
+        });
 }
 
 function executeDelete() {
@@ -314,7 +314,7 @@ function executeDelete() {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': csrfToken }
     }).then(res => res.json()).then(data => {
-        if(data.success) { hideModalSafely('deleteModal'); loadTasks(); }
+        if (data.success) { hideModalSafely('deleteModal'); loadTasks(); }
     });
 }
 
@@ -324,26 +324,56 @@ function confirmComplete() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
     fetch(`${BASE_URL}/api/tasks/${id}/complete`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken},
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
         body: JSON.stringify({ note: note })
     }).then(res => res.json()).then(data => {
-        if(data.success) { hideModalSafely('completeModal'); loadTasks(); }
+        if (data.success) { hideModalSafely('completeModal'); loadTasks(); }
     });
+}
+function confirmNotDone() {
+    let id = document.getElementById("completeTaskId").value;
+    let note = document.getElementById("completionNote").value.trim();
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    // Bắt buộc nhập ghi chú
+    if (note === "") {
+        alert("Vui lòng nhập ghi chú khi chọn 'Không thực hiện'");
+        return;
+    }
+
+    fetch(`${BASE_URL}/api/tasks/${id}/not-done`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ note: note })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                hideModalSafely('completeModal');
+                loadTasks();
+            }
+        });
 }
 
 function getStatusBadge(status) {
     if (status == 0) return '<span class="badge bg-warning text-dark">Chờ xử lý</span>';
     if (status == 1) return '<span class="badge bg-success">Đã hoàn thành</span>';
+    if (status == 2) {
+        return '<span class="badge bg-danger">Không thực hiện</span>'; 
+    }
     return '<span class="badge bg-danger">Hết hạn</span>';
 }
 
 function formatDate(dateString) {
     // 1. Kiểm tra dữ liệu đầu vào
     if (!dateString) return '';
-    
+
     // 2. Tạo đối tượng Date (Lưu ý: dateString từ Laravel thường là YYYY-MM-DD)
     const date = new Date(dateString);
-    
+
     // 3. Kiểm tra xem ngày có hợp lệ không
     if (isNaN(date.getTime())) return dateString;
 
@@ -361,9 +391,9 @@ function formatDate(dateString) {
 // =============================================================
 function openTaskDialog() {
     document.getElementById('taskForm').reset();
-    document.getElementById('taskId').value = ''; 
+    document.getElementById('taskId').value = '';
     document.getElementById('taskStatus').value = '0';
-    
+
     // Reset Select2 về rỗng
     $('#taskAssignee').val(null).trigger('change');
 
@@ -384,7 +414,7 @@ function editTask(id) {
         document.getElementById('taskStartTime').value = task.start_time || '';
         document.getElementById('taskEndTime').value = task.end_time || '';
         document.getElementById('taskStatus').value = task.status ?? 0;
-        
+
         // Load danh sách người thực hiện lên Select2
         if (task.assignees && task.assignees.length > 0) {
             let assigneeIds = task.assignees.map(user => user.id);
@@ -420,23 +450,23 @@ function openCompleteModal(id, title) {
 
 function showModalSafely(modalId) {
     const el = document.getElementById(modalId);
-    if(typeof bootstrap !== 'undefined') { const m = bootstrap.Modal.getOrCreateInstance(el); m.show(); }
-    else if(typeof $ !== 'undefined') { $(el).modal('show'); }
+    if (typeof bootstrap !== 'undefined') { const m = bootstrap.Modal.getOrCreateInstance(el); m.show(); }
+    else if (typeof $ !== 'undefined') { $(el).modal('show'); }
 }
 function hideModalSafely(modalId) {
     const el = document.getElementById(modalId);
-    if(typeof bootstrap !== 'undefined') { const m = bootstrap.Modal.getInstance(el); if(m) m.hide(); }
-    else if(typeof $ !== 'undefined') { $(el).modal('hide'); }
+    if (typeof bootstrap !== 'undefined') { const m = bootstrap.Modal.getInstance(el); if (m) m.hide(); }
+    else if (typeof $ !== 'undefined') { $(el).modal('hide'); }
 }
 
 // Validation ngày tháng
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Cho tab chung
     const fromDateInput = document.getElementById('fromDate');
     const toDateInput = document.getElementById('toDate');
-    
+
     if (fromDateInput && toDateInput) {
-        fromDateInput.addEventListener('change', function() {
+        fromDateInput.addEventListener('change', function () {
             if (toDateInput.value && this.value > toDateInput.value) {
                 alert('Ngày bắt đầu không được lớn hơn ngày kết thúc!');
                 this.value = '';
@@ -444,8 +474,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 applyFilters();
             }
         });
-        
-        toDateInput.addEventListener('change', function() {
+
+        toDateInput.addEventListener('change', function () {
             if (fromDateInput.value && this.value < fromDateInput.value) {
                 alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu!');
                 this.value = '';
@@ -454,13 +484,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Tương tự cho tab "Của tôi" (nếu có)
     const myFromDate = document.getElementById('myFromDate');
     const myToDate = document.getElementById('myToDate');
-    
+
     if (myFromDate && myToDate) {
-        myFromDate.addEventListener('change', function() {
+        myFromDate.addEventListener('change', function () {
             if (myToDate.value && this.value > myToDate.value) {
                 alert('Ngày bắt đầu không được lớn hơn ngày kết thúc!');
                 this.value = '';
@@ -468,8 +498,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 applyFilters();
             }
         });
-        
-        myToDate.addEventListener('change', function() {
+
+        myToDate.addEventListener('change', function () {
             if (myFromDate.value && this.value < myFromDate.value) {
                 alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu!');
                 this.value = '';
@@ -479,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-$(document).ready(function() {
+$(document).ready(function () {
     $('#taskAssignee').select2({
         placeholder: "Chọn nhân viên",
         width: '100%'

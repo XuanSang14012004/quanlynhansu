@@ -36,3 +36,4 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/my-tasks/{id}', [MyTaskApiController::class, 'show']);
     Route::post('/my-tasks/{id}/complete', [MyTaskApiController::class, 'markAsComplete']);
 });
+

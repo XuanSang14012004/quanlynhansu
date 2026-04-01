@@ -3,162 +3,201 @@
 @section('title', 'Công việc của tôi')
 
 @section('style')
-    {{-- CSS cho Datepicker và Select2 nếu cần --}}
-    <link href="{{ asset('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet" type="text/css" />
-    <style>
-        /* Custom UI giống hình ảnh thiết kế */
-        .custom-page-container {
-            padding: 20px;
-        }
-        
-        /* Cụm bộ lọc Date Buttons */
-        .filter-btn-group {
-            display: flex;
-            border: 1px solid #3b82f6;
-            border-radius: 4px;
-            overflow: hidden;
-            width: fit-content;
-            margin-bottom: 15px;
-            background: white;
-        }
-        .filter-btn-group button {
-            background: white;
-            border: none;
-            border-right: 1px solid #3b82f6;
-            color: #3b82f6;
-            padding: 8px 16px;
-            font-size: 14px;
-            cursor: pointer;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        .filter-btn-group button:last-child {
-            border-right: none;
-        }
-        .filter-btn-group button:hover {
-            background: #eff6ff;
-        }
-        .filter-btn-group button.active {
-            font-weight: 500;
-            background: #f0f9ff;
-        }
+{{-- CSS cho Datepicker và Select2 nếu cần --}}
+<link href="{{ asset('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet" type="text/css" />
+<style>
+    /* Custom UI giống hình ảnh thiết kế */
+    .custom-page-container {
+        padding: 20px;
+    }
 
-        /* Dòng Input Tìm kiếm */
-        .filter-input-row {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            background: white;
-            padding: 20px;
-            border-radius: 6px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-        .filter-input-row .input-search {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            outline: none;
-            font-size: 14px;
-        }
-        .filter-input-row .select-status {
-            width: 250px;
-            padding: 8px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            outline: none;
-            font-size: 14px;
-        }
-        .filter-input-row .btn-clear {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: white;
-            border: 1px solid #cbd5e1;
-            padding: 8px 16px;
-            border-radius: 4px;
-            color: #475569;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .filter-input-row .btn-clear:hover {
-            background: #f8fafc;
-        }
+    /* Cụm bộ lọc Date Buttons */
+    .filter-btn-group {
+        display: flex;
+        border: 1px solid #3b82f6;
+        border-radius: 4px;
+        overflow: hidden;
+        width: fit-content;
+        margin-bottom: 15px;
+        background: white;
+    }
 
-        /* Form chọn ngày tuỳ chỉnh (Ẩn mặc định) */
-        .custom-date-inputs {
-            display: none;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 20px;
-            background: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            width: fit-content;
-        }
+    .filter-btn-group button {
+        background: white;
+        border: none;
+        border-right: 1px solid #3b82f6;
+        color: #3b82f6;
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.2s ease;
+    }
 
-        /* Bảng dữ liệu */
-        .custom-table-wrapper {
-            background: white;
-            border-radius: 6px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-        .custom-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0 !important;
-        }
-        .custom-table thead {
-            background-color: #dceafe;
-        }
-        .custom-table th {
-            text-align: left;
-            padding: 15px 20px !important;
-            font-weight: 600;
-            color: #1e293b;
-            border: none !important;
-            white-space: nowrap;
-        }
-        .custom-table td {
-            padding: 15px 20px !important;
-            border-top: 1px solid #f1f5f9 !important;
-            border-bottom: 1px solid #f1f5f9 !important;
-            vertical-align: middle !important;
-            color: #334155;
-        }
-        
-        /* Badge & Actions */
-        .status-badge {
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 500;
-            display: inline-block;
-        }
-        .status-badge.pending { background-color: #fbbf24; color: #000; }
-        .status-badge.completed { background-color: #10b981; color: #fff; }
-        .status-badge.default { background-color: #94a3b8; color: #fff; }
+    .filter-btn-group button:last-child {
+        border-right: none;
+    }
 
-        .action-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 4px;
-            background: transparent;
-            margin-right: 5px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .action-btn.view { border: 1px solid #38bdf8; color: #38bdf8; }
-        .action-btn.view:hover { background: #e0f2fe; }
-        .action-btn.check { border: 1px solid #10b981; color: #10b981; }
-        .action-btn.check:hover { background: #d1fae5; }
-    </style>
+    .filter-btn-group button:hover {
+        background: #eff6ff;
+    }
+
+    .filter-btn-group button.active {
+        font-weight: 500;
+        background: #f0f9ff;
+    }
+
+    /* Dòng Input Tìm kiếm */
+    .filter-input-row {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        background: white;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .filter-input-row .input-search {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .filter-input-row .select-status {
+        width: 250px;
+        padding: 8px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .filter-input-row .btn-clear {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: white;
+        border: 1px solid #cbd5e1;
+        padding: 8px 16px;
+        border-radius: 4px;
+        color: #475569;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .filter-input-row .btn-clear:hover {
+        background: #f8fafc;
+    }
+
+    /* Form chọn ngày tuỳ chỉnh (Ẩn mặc định) */
+    .custom-date-inputs {
+        display: none;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 20px;
+        background: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        width: fit-content;
+    }
+
+    /* Bảng dữ liệu */
+    .custom-table-wrapper {
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0 !important;
+    }
+
+    .custom-table thead {
+        background-color: #dceafe;
+    }
+
+    .custom-table th {
+        text-align: left;
+        padding: 15px 20px !important;
+        font-weight: 600;
+        color: #1e293b;
+        border: none !important;
+        white-space: nowrap;
+    }
+
+    .custom-table td {
+        padding: 15px 20px !important;
+        border-top: 1px solid #f1f5f9 !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        vertical-align: middle !important;
+        color: #334155;
+    }
+
+    /* Badge & Actions */
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .status-badge.pending {
+        background-color: #fbbf24;
+        color: #000;
+    }
+
+    .status-badge.completed {
+        background-color: #10b981;
+        color: #fff;
+    }
+
+    .status-badge.default {
+        background-color: #94a3b8;
+        color: #fff;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        background: transparent;
+        margin-right: 5px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .action-btn.view {
+        border: 1px solid #38bdf8;
+        color: #38bdf8;
+    }
+
+    .action-btn.view:hover {
+        background: #e0f2fe;
+    }
+
+    .action-btn.check {
+        border: 1px solid #10b981;
+        color: #10b981;
+    }
+
+    .action-btn.check:hover {
+        background: #d1fae5;
+    }
+    
+</style>
 @endsection
 
 @section('content')
@@ -186,24 +225,24 @@
                 <button type="button" class="btn" data-filter="thisWeek">Tuần này</button>
                 <button type="button" class="btn" data-filter="custom">Từ ngày - Đến ngày</button>
             </div>
-            
+
             <div id="customDateRange" class="custom-date-inputs">
                 <span style="font-weight: 500; color: #475569;">Từ ngày:</span>
                 <input type="date" id="fromDate" class="input-search" style="width: 150px; padding: 6px 12px;" onchange="applyFilters()">
-                
+
                 <span style="font-weight: 500; color: #475569;">Đến ngày:</span>
                 <input type="date" id="toDate" class="input-search" style="width: 150px; padding: 6px 12px;" onchange="applyFilters()">
             </div>
 
             <div class="filter-input-row">
                 <input type="text" class="input-search" id="searchInput" placeholder="Nhập nội dung, mô tả công việc" oninput="applyFilters()">
-                
+
                 <select class="select-status" id="statusFilter" onchange="applyFilters()">
                     <option value="all">Tất cả trạng thái</option>
                     <option value="0">Chờ xử lý</option>
                     <option value="1">Đã hoàn thành</option>
                 </select>
-                
+
                 <button class="btn-clear" onclick="clearFilters()">
                     <i class="fa fa-times-circle" style="color: #94a3b8;"></i> Xóa bộ lọc
                 </button>
@@ -223,17 +262,19 @@
                             </tr>
                         </thead>
                         <tbody id="taskTableBody">
-                            <tr><td colspan="6" class="text-center">Đang tải dữ liệu...</td></tr>
+                            <tr>
+                                <td colspan="6" class="text-center">Đang tải dữ liệu...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                
+
                 <div class="row" style="padding: 15px 20px;">
                     <div class="col-md-12 text-right" id="pagination"></div>
                 </div>
             </div>
         </div>
-        
+
     </div>
 </div>
 
@@ -307,7 +348,7 @@
             // Đổi màu nút active
             $('#dateButtons .btn').removeClass('active');
             $(this).addClass('active');
-            
+
             // Lấy giá trị filter
             activeDateFilter = $(this).data('filter');
 
@@ -334,13 +375,13 @@
         $('#statusFilter').val('all');
         $('#fromDate').val('');
         $('#toDate').val('');
-        
+
         // Reset nút ngày về "Tất cả"
         $('#dateButtons .btn').removeClass('active');
         $('[data-filter="all"]').addClass('active');
         activeDateFilter = 'all';
         $('#customDateRange').hide();
-        
+
         fetchTasks(1);
     }
 
@@ -351,32 +392,35 @@
         const fromDate = $('#fromDate').val();
         const toDate = $('#toDate').val();
 
-        App.blockUI({ target: '#taskTableBody', animate: true });
+        App.blockUI({
+            target: '#taskTableBody',
+            animate: true
+        });
 
         axios.get(API_URL, {
-            params: {
-                page: page,
-                search: search,
-                status: status,
-                date_filter: activeDateFilter,
-                from_date: fromDate,
-                to_date: toDate
-            }
-        })
-        .then(function (response) {
-            renderTable(response.data);
-            App.unblockUI('#taskTableBody');
-        })
-        .catch(function (error) {
-            console.error(error);
-            $('#taskTableBody').html('<tr><td colspan="6" class="text-center font-red bold">Lỗi kết nối API!</td></tr>');
-            App.unblockUI('#taskTableBody');
-        });
+                params: {
+                    page: page,
+                    search: search,
+                    status: status,
+                    date_filter: activeDateFilter,
+                    from_date: fromDate,
+                    to_date: toDate
+                }
+            })
+            .then(function(response) {
+                renderTable(response.data);
+                App.unblockUI('#taskTableBody');
+            })
+            .catch(function(error) {
+                console.error(error);
+                $('#taskTableBody').html('<tr><td colspan="6" class="text-center font-red bold">Lỗi kết nối API!</td></tr>');
+                App.unblockUI('#taskTableBody');
+            });
     }
 
     // 2. HÀM RENDER BẢNG
     function renderTable(data) {
-        const tasks = data.data; 
+        const tasks = data.data;
         const tbody = $('#taskTableBody');
         tbody.empty();
 
@@ -387,12 +431,14 @@
 
         tasks.forEach(task => {
             let statusLabel = '';
-            if(task.status == 0) {
+            if (task.status == 0) {
                 statusLabel = '<span class="status-badge pending">Chờ xử lý</span>';
-            } else if(task.status == 1) {
+            } else if (task.status == 1) {
                 statusLabel = '<span class="status-badge completed">Đã hoàn thành</span>';
+            } else if (task.status == 2) {
+                statusLabel = '<span class="status-badge bg-danger">Không thực hiện</span>';
             } else {
-                statusLabel = '<span class="status-badge default">Khác</span>';
+                statusLabel = '<span class="status-badge default">Hết hạn</span>';
             }
 
             const row = `
@@ -446,8 +492,11 @@
 
     // 4. HÀM MỞ CHI TIẾT
     function openDetail(id) {
-        App.blockUI({ target: '.custom-table-wrapper', animate: true });
-        axios.get(`${API_URL}/${id}`).then(function (response) {
+        App.blockUI({
+            target: '.custom-table-wrapper',
+            animate: true
+        });
+        axios.get(`${API_URL}/${id}`).then(function(response) {
             const task = response.data;
             currentTaskId = task.id;
             $('#mTitle').text(task.title);
@@ -456,67 +505,72 @@
             $('#mDesc').text(task.description || 'Không có mô tả');
             $('#mNote').text(task.completion_note || '');
 
-            if (task.status == 1) { 
+            if (task.status == 1) {
                 $('#completionArea').hide();
-                $('#btnSubmitComplete').hide(); 
+                $('#btnSubmitComplete').hide();
                 $('#completedInfo').show();
-            } else { 
+            } else {
                 $('#completionArea').show();
-                $('#btnSubmitComplete').show(); 
+                $('#btnSubmitComplete').show();
                 $('#completedInfo').hide();
-                $('#completionNote').val(''); 
+                $('#completionNote').val('');
             }
             $('#detailModal').modal('show');
             App.unblockUI('.custom-table-wrapper');
-        }).catch(function (error) {
+        }).catch(function(error) {
             alert('Không thể tải chi tiết công việc.');
             App.unblockUI('.custom-table-wrapper');
         });
     }
 
     // 5. HÀM GỬI API HOÀN THÀNH
-   // 5. HÀM GỬI API HOÀN THÀNH
+    // 5. HÀM GỬI API HOÀN THÀNH
     function submitCompletion() {
         const note = $('#completionNote').val();
         if (!confirm('Bạn có chắc chắn muốn báo cáo hoàn thành công việc này không?')) return;
-        
-        App.blockUI({ target: '#detailModal .modal-content', animate: true });
 
-        axios.post(`${API_URL}/${currentTaskId}/complete`, { note: note })
-        .then(function (response) {
-            // 1. Đóng popup ngay lập tức
-            $('#detailModal').modal('hide');
-            
-            // 2. Xoá nội dung ghi chú sau khi hoàn thành
-            $('#completionNote').val('');
-            
-            // 3. Tải lại bảng ngay lập tức
-            fetchTasks(1); 
-            
-            // 4. Hiển thị thông báo (An toàn kiểm tra thư viện)
-            if (typeof toastr !== 'undefined') {
-                toastr.success('Đã cập nhật trạng thái thành công!', 'Thành công');
-            } else {
-                alert('Đã cập nhật trạng thái thành công!');
-            }
-        })
-        .catch(function (error) {
-            console.error('Lỗi API Hoàn thành:', error);
-            if (typeof toastr !== 'undefined') {
-                toastr.error('Có lỗi xảy ra khi cập nhật.', 'Lỗi');
-            } else {
-                alert('Có lỗi xảy ra khi cập nhật. Vui lòng nhấn F12 chọn tab Console để xem chi tiết.');
-            }
-        })
-        .finally(function() {
-            App.unblockUI('#detailModal .modal-content');
+        App.blockUI({
+            target: '#detailModal .modal-content',
+            animate: true
         });
+
+        axios.post(`${API_URL}/${currentTaskId}/complete`, {
+                note: note
+            })
+            .then(function(response) {
+                // 1. Đóng popup ngay lập tức
+                $('#detailModal').modal('hide');
+
+                // 2. Xoá nội dung ghi chú sau khi hoàn thành
+                $('#completionNote').val('');
+
+                // 3. Tải lại bảng ngay lập tức
+                fetchTasks(1);
+
+                // 4. Hiển thị thông báo (An toàn kiểm tra thư viện)
+                if (typeof toastr !== 'undefined') {
+                    toastr.success('Đã cập nhật trạng thái thành công!', 'Thành công');
+                } else {
+                    alert('Đã cập nhật trạng thái thành công!');
+                }
+            })
+            .catch(function(error) {
+                console.error('Lỗi API Hoàn thành:', error);
+                if (typeof toastr !== 'undefined') {
+                    toastr.error('Có lỗi xảy ra khi cập nhật.', 'Lỗi');
+                } else {
+                    alert('Có lỗi xảy ra khi cập nhật. Vui lòng nhấn F12 chọn tab Console để xem chi tiết.');
+                }
+            })
+            .finally(function() {
+                App.unblockUI('#detailModal .modal-content');
+            });
     }
 
     // Hàm fomat ngày tháng
     function formatDate(dateString) {
         if (!dateString) return '';
-        const parts = dateString.split('-'); 
+        const parts = dateString.split('-');
         if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
         return dateString;
     }

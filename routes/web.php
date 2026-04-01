@@ -309,4 +309,4 @@ Route::put('/notification/update/{id}',
 
 Route::delete('/notification/delete/{id}', 
 [NotificationScheduleController::class,'destroy'])->name('notification.delete');
-
+Route::post('/api/tasks/{id}/not-done', [TaskController::class, 'notDone']);
