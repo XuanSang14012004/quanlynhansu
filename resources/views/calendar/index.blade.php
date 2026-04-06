@@ -216,6 +216,7 @@
 </style>
 
 <script>
+    window.BASE_URL = window.location.origin + '/datatech/public';
     let tasks = [];
     let today = new Date();
     let currentViewMonth = today.getMonth(); // Lưu tháng đang hiển thị trên UI (0 - 11)
@@ -227,7 +228,7 @@
 
     async function fetchTasks() {
         try {
-            const response = await fetch('/api/calendar-tasks');
+            const response = await fetch(`${window.BASE_URL}/api/calendar-tasks`);
             tasks = await response.json();
         } catch (error) {
             console.error('Lỗi lấy dữ liệu:', error);

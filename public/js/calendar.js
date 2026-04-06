@@ -1,4 +1,5 @@
 // calendar.js
+window.BASE_URL = window.location.origin + '/datatech/public';
 let tasks = [];
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -7,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function fetchTasks() {
     try {
-        const response = await fetch('/api/calendar-tasks');
+        const response = await fetch(`${window.BASE_URL}/api/calendar-tasks`);
         tasks = await response.json();
     } catch (error) {
         console.error('Lỗi lấy dữ liệu:', error);
