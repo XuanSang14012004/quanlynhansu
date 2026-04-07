@@ -55,7 +55,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="taskDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- <div class="modal fade" id="taskDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="border-radius: 8px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
             <div class="modal-header" style="border-bottom: 1px solid #f0f0f0; padding: 20px 24px;">
@@ -111,6 +111,33 @@
                 <button type="button" id="btnCompleteTask" class="btn btn-success" onclick="markTaskAsCompleted()" style="background: #198754; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 500;">
                     <i class="fa fa-check-circle" style="margin-right: 5px;"></i> Hoàn thành
                 </button>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="modal fade" id="dayTasksModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Danh sách công việc</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nội dung công việc</th>
+                            <th>Mô tả</th>
+                            <th>Thời gian</th>
+                            <th>Ngày thực hiện</th>
+                            <th>Người thực hiện</th>
+                            <th>Người giao việc</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dayTasksTable"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -197,6 +224,22 @@
         transition: transform 0.2s, box-shadow 0.2s;
     }
 
+    .task-count {
+        font-size: 12px;
+        padding: 6px;
+        background: #eef2fe;
+        color: #667eea;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .task-count:hover {
+        background: #dbe4ff;
+    }
+
     .task-item:hover {
         transform: translateY(-1px);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -212,6 +255,107 @@
         border-left-color: #4a90e2;
         background: #e8f0fe;
         color: #1a56db;
+    }
+
+    #dayTasksModal .modal-dialog {
+        width: 100%;
+        max-width: 100%;
+        margin: 10px auto;
+    }
+
+    #dayTasksModal td:nth-child(5) {
+        white-space: normal;
+        max-width: 250px;
+        word-break: break-word;
+    }
+    
+
+    #dayTasksModal td:nth-child(2) {
+        white-space: normal;
+        max-width: 200px;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    .status-completed {
+        background: #10b981;
+        color: #fff;
+    }
+
+    .status-pending {
+        background: #fbbf24;
+        color: #000;
+    }
+
+    .status-cancel {
+        background: #e5cfcf;
+        color: #2c3e50;
+    }
+
+    /* 🔥 Modal to hơn */
+    #dayTasksModal .modal-dialog {
+        max-width: 95%;
+    }
+
+    /* 🔥 Body scroll nếu dài */
+    #dayTasksModal .modal-body {
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+
+    /* 🔥 Table đẹp hơn */
+    #dayTasksModal table {
+        font-size: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    /* Header */
+    #dayTasksModal th {
+        padding: 14px;
+        font-size: 15px;
+        font-weight: 700;
+        background: #f4f6fb;
+        text-align: center;
+    }
+
+    /* Cell */
+    #dayTasksModal td {
+        padding: 14px;
+        vertical-align: middle;
+    }
+
+    /* Hover */
+    #dayTasksModal tbody tr:hover {
+        background: #f8f9ff;
+        transition: 0.2s;
+    }
+
+    /* Fix xuống dòng */
+
+
+    #dayTasksModal td {
+        white-space: nowrap;
+    }
+
+    #dayTasksModal td:nth-child(1),
+    #dayTasksModal td:nth-child(2) {
+        white-space: normal;
+    }
+
+    /* Badge to hơn */
+    .status-badge {
+        padding: 8px 14px;
+        font-size: 14px;
+        border-radius: 6px;
+        display: inline-block;
+        min-width: 120px;
+        text-align: center;
     }
 </style>
 
@@ -281,10 +425,15 @@
 
             const dayTasks = tasks.filter(t => dateString >= t.startDate && dateString <= t.endDate);
 
-            const tasksHtml = dayTasks.map(t => {
-                const statusClass = t.status == 1 ? 'status-1' : 'status-0';
-                return `<div class="task-item ${statusClass}" title="${t.title}" onclick="openTaskModal(${t.id})">${t.title}</div>`;
-            }).join('');
+            let tasksHtml = '';
+
+            if (dayTasks.length > 0) {
+                tasksHtml = `
+        <div class="task-count" onclick="openDayTasks('${dateString}')">
+            +${dayTasks.length} công việc
+        </div>
+    `;
+            }
 
             html += `
         <div class="calendar-day" style="${dayStyle}">
@@ -339,13 +488,13 @@
         document.getElementById('modalTaskTitle').innerText = task.title;
         document.getElementById('modalTaskDescription').innerText = task.description || 'Không có mô tả chi tiết.';
         // ĐÃ SỬA: Lấy danh sách tên từ mảng assignees (nhiều người)
-if (task.assignees && task.assignees.length > 0) {
-    document.getElementById('modalTaskAssignee').innerText = task.assignees.map(user => user.name).join(', ');
-} else if (task.assignee_name) { // Giữ lại đề phòng API cũ chưa cập nhật
-    document.getElementById('modalTaskAssignee').innerText = task.assignee_name;
-} else {
-    document.getElementById('modalTaskAssignee').innerText = 'Chưa phân công';
-}
+        if (task.assignees && task.assignees.length > 0) {
+            document.getElementById('modalTaskAssignee').innerText = task.assignees.map(user => user.name).join(', ');
+        } else if (task.assignee_name) { // Giữ lại đề phòng API cũ chưa cập nhật
+            document.getElementById('modalTaskAssignee').innerText = task.assignee_name;
+        } else {
+            document.getElementById('modalTaskAssignee').innerText = 'Chưa phân công';
+        }
         document.getElementById('modalTaskCreator').innerText = task.creator_name || 'Hệ thống';
 
         // Xử lý định dạng Thời gian (Cắt bỏ số giây, ví dụ 08:00:00 -> 08:00)
@@ -389,8 +538,8 @@ if (task.assignees && task.assignees.length > 0) {
     // HÀM XỬ LÝ KHI BẤM NÚT "HOÀN THÀNH" THỰC TẾ
     async function markTaskAsCompleted() {
         const taskId = document.getElementById('modalTaskId').value;
-        
-        if(confirm('Bạn xác nhận đã hoàn thành công việc này chứ?')) {
+
+        if (confirm('Bạn xác nhận đã hoàn thành công việc này chứ?')) {
             try {
                 // Gọi API xuống Laravel để cập nhật database
                 const response = await fetch(`/api/calendar-tasks/${taskId}/complete`, {
@@ -415,8 +564,8 @@ if (task.assignees && task.assignees.length > 0) {
                     }
 
                     // 2. Gọi lại API lấy danh sách việc mới nhất và vẽ lại lịch
-                    fetchTasks(); 
-                    
+                    fetchTasks();
+
                     // 3. Thông báo cho người dùng
                     alert('Tuyệt vời! Bạn đã hoàn thành công việc.');
                 } else {
@@ -427,5 +576,57 @@ if (task.assignees && task.assignees.length > 0) {
                 alert('Không thể kết nối đến máy chủ!');
             }
         }
+    }
+
+    function openDayTasks(date) {
+        const dayTasks = tasks.filter(t => date >= t.startDate && date <= t.endDate);
+
+        const formatTime = (timeStr) => timeStr ? timeStr.substring(0, 5) : '--:--';
+
+        let html = '';
+
+        dayTasks.forEach(t => {
+            let assignee = 'Chưa phân công';
+
+            if (t.assignees && t.assignees.length > 0) {
+                assignee = t.assignees.map(u => u.name).join(', ');
+            } else if (t.assignee_name) {
+                assignee = t.assignee_name;
+            }
+
+            let statusClass = '';
+            let statusText = '';
+
+            if (t.status == 1) {
+                statusClass = 'status-completed';
+                statusText = 'Đã hoàn thành';
+            } else if (t.status == 2) {
+                statusClass = 'status-cancel';
+                statusText = 'Không thực hiện';
+            } else {
+                statusClass = 'status-pending';
+                statusText = 'Chờ xử lý';
+            }
+
+            html += `
+            <tr onclick="openTaskModal(${t.id})" style="cursor:pointer">
+                  <td>${t.title}</td>
+                  <td>${t.description || ''}</td>
+                  <td>${formatTime(t.start_time)} - ${formatTime(t.end_time)}</td>
+                  <td>${t.startDate}</td>
+                  <td>${assignee}</td>
+                  <td>${t.creator_name || ''}</td>
+                  <td>
+            <span class="status-badge ${statusClass}">
+                ${statusText}
+            </span>
+        </td>
+            </tr>
+        `;
+        });
+
+        document.getElementById('dayTasksTable').innerHTML = html;
+
+        $('#dayTasksModal').modal('show');
     }
 </script>

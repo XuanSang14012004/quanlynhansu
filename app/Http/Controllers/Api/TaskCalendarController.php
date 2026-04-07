@@ -21,11 +21,7 @@ class TaskCalendarController extends Controller
         $currentUserId = Auth::id(); 
 
         // Lấy các task có ID của user đang đăng nhập trong bảng trung gian (task_user)
-        $tasks = Task::whereHas('assignees', function($query) use ($currentUserId) {
-                $query->where('users.id', $currentUserId);
-            })
-            ->with(['assignees', 'creator']) // Nạp quan hệ người làm và người tạo
-            ->get();
+       $tasks = Task::with(['assignees', 'creator'])->get();
 
         // Format lại dữ liệu cho giống hệt với cấu trúc Javascript cũ của bạn đang dùng
         $formattedTasks = $tasks->map(function($task) {
