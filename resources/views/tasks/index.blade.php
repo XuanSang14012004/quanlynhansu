@@ -4,6 +4,8 @@
 
 {{-- CSS SECTION: Premium Design with Modern UI/UX --}}
 @section('style')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- Flatpickr CSS -->
@@ -1104,7 +1106,8 @@
         $('#taskAssignee').select2({
             placeholder: "Chọn người thực hiện...",
             allowClear: true,
-            width: '100%' // Đảm bảo full width
+            width: '100%', // Đảm bảo full width
+            dropdownParent: $('#taskModal')
         });
         // Từ ngày
         flatpickr("#fromDate", {

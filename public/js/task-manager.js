@@ -394,10 +394,17 @@ function openTaskDialog() {
     document.getElementById('taskId').value = '';
     document.getElementById('taskStatus').value = '0';
 
-    // Reset Select2 về rỗng
+    // Reset Select2
     $('#taskAssignee').val(null).trigger('change');
 
     document.getElementById('taskModalTitle').innerText = "Thêm công việc mới";
+
+    //  set ngày hôm nay
+    const today = new Date().toISOString().split('T')[0];
+
+    document.getElementById('taskStartDate').value = today;
+    document.getElementById('taskEndDate').value = today;
+
     showModalSafely('taskModal');
 }
 
