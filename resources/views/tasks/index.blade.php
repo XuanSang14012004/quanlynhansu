@@ -292,8 +292,9 @@
     .filter-controls .col-md-5,
     .filter-controls .col-md-3,
     .filter-controls .col-md-2 {
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
     }
 
     /* Remove any inherited placeholder styles */
@@ -583,6 +584,22 @@
         border-top: 2px solid var(--border-color);
     }
 
+    /* Khi tất cả được chọn → ẩn các tag dư */
+    .select2-container--default.select2-container--focus .select2-selection--multiple.all-selected .select2-selection__choice {
+        display: none;
+    }
+
+    /* Hiển thị 1 tag duy nhất */
+    .select2-selection--multiple.all-selected::after {
+        content: "Tất cả";
+        display: inline-block;
+        background: #0d6efd;
+        color: #fff;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-top: 4px;
+    }
+
     /* ==================== SCROLLBAR ==================== */
     ::-webkit-scrollbar {
         width: 10px;
@@ -734,7 +751,89 @@
         margin-right: 6px;
     }
 
+    .filter-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
 
+    .select2-like-input {
+        display: flex;
+        align-items: center;
+        border: 1px solid #d1d5db;
+        /* giống Select2 */
+        border-radius: 6px;
+        background: #fff;
+        padding: 0 8px;
+        height: 34px;
+        /* chiều cao tương tự Select2 */
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+        min-width: 250px;
+    }
+
+    .select2-like-input input {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 14px;
+        padding: 6px 0;
+    }
+
+    .select2-like-input .icon {
+        color: #6b7280;
+        /* màu icon placeholder Select2 */
+        margin-right: 6px;
+        font-size: 16px;
+    }
+
+    .select2-like-input input::placeholder {
+        color: #9ca3af;
+        /* placeholder nhạt giống Select2 */
+    }
+
+    .select2-like-input:hover {
+        border-color: #3b82f6;
+        /* hover màu xanh */
+    }
+
+    .select2-like-input:focus-within {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 1px #3b82f6;
+    }
+
+    .select2-like-button {
+        display: inline-flex;
+        align-items: center;
+        /* căn giữa icon và chữ theo chiều dọc */
+        justify-content: center;
+        gap: 4px;
+        height: 34px;
+        /* chiều cao giống Select2 */
+        padding: 0 12px;
+        background: #fff;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        line-height: 1;
+        /* đảm bảo chữ không bị lệch */
+        box-sizing: border-box;
+        vertical-align: middle;
+        transition: all 0.2s;
+        margin-top: 1px;
+
+
+    }
+
+    .select2-like-button i {
+        font-size: 16px;
+    }
+
+    .select2-like-button:hover {
+        background: #f3f4f6;
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
 </style>
 @endsection
 
@@ -825,13 +924,9 @@
                                     <label class="form-label fw-semibold text-muted small mb-2">
                                         <i class="bi bi-search"></i> Tìm kiếm
                                     </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="bi bi-search"></i>
-                                        </span>
-                                        <input type="text" class="form-control" id="searchText"
-                                            placeholder="Nhập từ khóa tìm kiếm công việc..."
-                                            oninput="applyFilters()">
+                                    <div class="select2-like-input">
+                                        <span class="icon"><i class="bi bi-search"></i></span>
+                                        <input type="text" id="searchText" placeholder="Nhập từ khóa tìm kiếm công việc..." oninput="applyFilters()">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -859,8 +954,8 @@
                                     <label class="form-label fw-semibold text-muted small mb-2 d-block">
                                         &nbsp;
                                     </label>
-                                    <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
-                                        <i class="bi bi-arrow-counterclockwise"></i> Xóa lọc
+                                    <button class="select2-like-button" onclick="clearFilters()">
+                                        <i class="bi bi-arrow-clockwise"></i> Xóa lọc
                                     </button>
                                 </div>
                             </div>
@@ -988,9 +1083,9 @@
                         <label style="font-size: 14px; font-weight: 600; color: #555; margin-bottom: 8px; display: block;">
                             Tài liệu đính kèm
                         </label>
-                        <input type="file" id="taskAttachment" 
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.zip"
-                        style="width: 100%; border: 1px solid #ced4da; border-radius: 4px; padding: 7px 12px; font-size: 14px; outline: none; background-color: #fff;">
+                        <input type="file" id="taskAttachment"
+                            accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.zip"
+                            style="width: 100%; border: 1px solid #ced4da; border-radius: 4px; padding: 7px 12px; font-size: 14px; outline: none; background-color: #fff;">
                     </div>
                 </form>
             </div>
@@ -1158,6 +1253,43 @@
                 }
             });
         }
+    });
+</script>
+<script>
+    document.getElementById('assigneeSearch').addEventListener('input', function() {
+        let filter = this.value.toLowerCase();
+        let select = document.getElementById('assigneeFilter');
+        let options = select.querySelectorAll('option');
+
+        options.forEach(option => {
+            if (option.value === 'all') {
+                option.style.display = '';
+                return;
+            }
+            if (option.text.toLowerCase().includes(filter)) {
+                option.style.display = '';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        // Select2 cho Nhân viên
+        $('#assigneeFilter').select2({
+            placeholder: "Tìm kiếm nhân viên",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Select2 cho Trạng thái
+        $('#statusFilter').select2({
+            placeholder: "Tìm kiếm trạng thái",
+            allowClear: true,
+            width: '100%'
+        });
+
     });
 </script>
 <script src="{{ asset('js/task-manager.js') }}"></script>

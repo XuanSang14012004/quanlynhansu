@@ -275,12 +275,12 @@ function loadUsers() {
             let filterSelect = document.getElementById('assigneeFilter');
             let formSelect = document.getElementById('taskAssignee');
             // let html = '';
-            let html = '<option value="all_users">Tất cả</option>';
+            let html = '<option value="all">Tất cả</option>';
 
             users.forEach(u => {
                 html += `<option value="${u.id}">${u.name}</option>`;
             });
-            if (filterSelect) filterSelect.innerHTML = '<option value="all">Tất cả nhân viên</option>' + html;
+            if (filterSelect) filterSelect.innerHTML = '' + html;
             if (formSelect) {
                 formSelect.innerHTML = html;
             }
