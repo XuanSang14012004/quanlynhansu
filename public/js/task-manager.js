@@ -5,6 +5,34 @@ window.BASE_URL = window.location.origin + '/datatech/public';
 document.addEventListener('DOMContentLoaded', function () {
     loadUsers();
     loadTasks();
+
+    $('#taskAssignee').select2({
+        placeholder: "🔍 Người thực hiện...",
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#taskModal'),
+        closeOnSelect: false,
+
+        templateSelection: function (data, container) {
+            let selected = $('#taskAssignee').val() || [];
+            let total = $('#taskAssignee option').length - 1;
+
+            // 👉 Nếu chọn tất cả
+            if (selected.length === total && total > 0) {
+                // ❌ XÓA toàn bộ tag cũ
+                setTimeout(() => {
+                    $('.select2-selection__rendered').html(
+                        '<li class="select2-selection__choice">Tất cả</li>'
+                    );
+                }, 0);
+
+                return 'Tất cả';
+            }
+
+            return data.text;
+        }
+    });
+
 });
 
 // =============================================================
@@ -202,7 +230,7 @@ function loadTasks() {
                 buttons += `<button class="btn btn-sm btn-danger me-1" onclick="openDeleteModal(${task.id})"><i class="bi bi-trash"></i></button>`;
                 if (task.status == 0) {
                     buttons += `<button class="btn btn-sm btn-success" onclick="openCompleteModal(${task.id}, '${task.title.replace(/'/g, "\\'")}')" title="Xác nhận hoàn thành"><i class="bi bi-check-lg"></i></button>`;
-                    
+
                 }
 
                 let timeRange = (task.start_time ? task.start_time.substring(0, 5) : '--') + ' - ' + (task.end_time ? task.end_time.substring(0, 5) : '--');
@@ -246,25 +274,52 @@ function loadUsers() {
         .then(users => {
             let filterSelect = document.getElementById('assigneeFilter');
             let formSelect = document.getElementById('taskAssignee');
-            let html = '';
-            users.forEach(u => html += `<option value="${u.id}">${u.name}</option>`);
+            // let html = '';
+            let html = '<option value="all_users">Tất cả</option>';
+
+            users.forEach(u => {
+                html += `<option value="${u.id}">${u.name}</option>`;
+            });
             if (filterSelect) filterSelect.innerHTML = '<option value="all">Tất cả nhân viên</option>' + html;
-            if (formSelect) formSelect.innerHTML = html; // Đã bỏ "Chọn nhân viên" vì Select2 tự xử lý placeholder
+            if (formSelect) {
+                formSelect.innerHTML = html;
+            }
         })
         .catch(err => console.error(err));
+
+    //xử lý chọn tất cả
+    $('#taskAssignee').on('change', function () {
+        let values = $(this).val() || [];
+
+        if (values.includes('all_users')) {
+
+            let allIds = [];
+
+            $('#taskAssignee option').each(function () {
+                let val = $(this).val();
+                if (val !== 'all_users') {
+                    allIds.push(val);
+                }
+            });
+
+            $(this).val(allIds).trigger('change.select2');
+        }
+    });
 }
+
 
 // =============================================================
 // ĐÃ SỬA: Hàm Lưu Công Việc (Gửi mảng ID)
 // =============================================================
 function saveTask() {
-    let id = document.getElementById('taskId').value;
-    let form = document.getElementById('taskForm');
+    const id = document.getElementById('taskId').value;
+    const form = document.getElementById('taskForm');
 
+    // Validation cơ bản
     if (!document.getElementById('taskContent').value) { alert('Vui lòng nhập tên công việc'); return; }
     if (!document.getElementById('taskStartDate').value) { alert('Vui lòng chọn ngày bắt đầu'); return; }
 
-    let formData = new FormData(form);
+    const formData = new FormData(form);
     formData.append('title', document.getElementById('taskContent').value);
     formData.append('description', document.getElementById('taskDescription').value);
     formData.append('start_date', document.getElementById('taskStartDate').value);
@@ -273,20 +328,25 @@ function saveTask() {
     formData.append('end_time', document.getElementById('taskEndTime').value);
     formData.append('status', document.getElementById('taskStatus').value);
 
-    // Lấy mảng ID người thực hiện từ Select2
-    let assignees = $('#taskAssignee').val();
-    if (assignees && assignees.length > 0) {
-        assignees.forEach(function (userId) {
-            formData.append('assignees[]', userId);
-        });
-    } else {
-        alert('Vui lòng chọn ít nhất 1 người thực hiện');
-        return;
+    // Lấy mảng người thực hiện
+    let assignees = $('#taskAssignee').val() || [];
+    assignees = assignees.filter(id => id !== 'all_users').map(id => parseInt(id)).filter(id => !isNaN(id));
+    if (!assignees.length) { alert('Vui lòng chọn ít nhất 1 người thực hiện'); return; }
+    assignees.forEach(uid => formData.append('assignees[]', uid));
+
+    // Upload file đính kèm (nếu có)
+    const attachmentInput = document.getElementById('taskAttachment');
+    if (attachmentInput && attachmentInput.files.length > 0) {
+        const file = attachmentInput.files[0];
+        const maxSize = 10 * 1024 * 1024;
+        const fileName = file.name.toLowerCase();
+        if (fileName.endsWith('.exe')) { alert('Không được upload file .exe!'); return; }
+        if (file.size > maxSize) { alert('File vượt quá 10MB!'); return; }
+        formData.append('attachment', file);
     }
 
-    let url = id
-        ? `${BASE_URL}/api/tasks/${id}`
-        : `${BASE_URL}/api/tasks`;
+    // URL API
+    let url = id ? `${BASE_URL}/api/tasks/${id}` : `${BASE_URL}/api/tasks`;
     if (id) formData.append('_method', 'PUT');
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -296,18 +356,21 @@ function saveTask() {
         headers: { 'X-CSRF-TOKEN': csrfToken },
         body: formData
     })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                hideModalSafely('taskModal');
-                loadTasks();
-                alert('Thành công!');
-            } else {
-                alert('Lỗi: ' + (data.message || 'Kiểm tra lại dữ liệu'));
-            }
-        });
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            hideModalSafely('taskModal');
+            loadTasks();
+            alert('Thành công!');
+        } else {
+            alert('Lỗi: ' + (data.message || 'Kiểm tra lại dữ liệu'));
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Lỗi API: ' + err.message);
+    });
 }
-
 function executeDelete() {
     let id = document.getElementById('deleteTaskId').value;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -393,6 +456,8 @@ function openTaskDialog() {
     document.getElementById('taskForm').reset();
     document.getElementById('taskId').value = '';
     document.getElementById('taskStatus').value = '0';
+
+
 
     // Reset Select2
     $('#taskAssignee').val(null).trigger('change');
@@ -516,9 +581,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-$(document).ready(function () {
-    $('#taskAssignee').select2({
-        placeholder: "Chọn nhân viên",
-        width: '100%'
-    });
-});
+

@@ -5,7 +5,6 @@
 {{-- CSS SECTION: Premium Design with Modern UI/UX --}}
 @section('style')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- Flatpickr CSS -->
@@ -734,6 +733,8 @@
     .btn-group .btn i {
         margin-right: 6px;
     }
+
+
 </style>
 @endsection
 
@@ -987,7 +988,9 @@
                         <label style="font-size: 14px; font-weight: 600; color: #555; margin-bottom: 8px; display: block;">
                             Tài liệu đính kèm
                         </label>
-                        <input type="file" id="taskAttachment" style="width: 100%; border: 1px solid #ced4da; border-radius: 4px; padding: 7px 12px; font-size: 14px; outline: none; background-color: #fff;">
+                        <input type="file" id="taskAttachment" 
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.zip"
+                        style="width: 100%; border: 1px solid #ced4da; border-radius: 4px; padding: 7px 12px; font-size: 14px; outline: none; background-color: #fff;">
                     </div>
                 </form>
             </div>
@@ -1085,7 +1088,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     // Date Filter Change Handler
     function handleDateFilterChange() {
@@ -1103,12 +1106,12 @@
 
 
     document.addEventListener('DOMContentLoaded', function() {
-        $('#taskAssignee').select2({
-            placeholder: "Chọn người thực hiện...",
-            allowClear: true,
-            width: '100%', // Đảm bảo full width
-            dropdownParent: $('#taskModal')
-        });
+        // $('#taskAssignee').select2({
+        //     placeholder: "Chọn người thực hiện...",
+        //     allowClear: true,
+        //     width: '100%', // Đảm bảo full width
+        //     dropdownParent: $('#taskModal')
+        // });
         // Từ ngày
         flatpickr("#fromDate", {
             dateFormat: "Y-m-d", // ✅ GỬI yyyy-mm-dd (backend Laravel cần format này)
