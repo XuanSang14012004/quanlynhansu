@@ -298,6 +298,7 @@ Route::get('/calendar', [TaskCalendarController::class, 'index'])->name('tasks.c
 Route::get('/api/calendar-tasks', [TaskCalendarController::class, 'getTasks']);
 // Route nhận yêu cầu POST để cập nhật trạng thái công việc
 Route::post('/api/calendar-tasks/{id}/complete', [App\Http\Controllers\Api\TaskCalendarController::class, 'completeTask']);
+
 //Cấu hình thông báo
 Route::get('/notification-config',
     [NotificationScheduleController::class,'index']
@@ -310,3 +311,14 @@ Route::put('/notification/update/{id}',
 Route::delete('/notification/delete/{id}', 
 [NotificationScheduleController::class,'destroy'])->name('notification.delete');
 Route::post('/api/tasks/{id}/not-done', [TaskController::class, 'notDone']);
+
+///cấu hình ngày nghi
+use App\Http\Controllers\Api\HolidayController;
+
+Route::get('/holiday-config', [HolidayController::class, 'indexView'])->name('holiday.index');
+
+Route::post('/holiday/store', [HolidayController::class, 'store'])->name('holiday.store');
+
+Route::put('/holiday/update/{id}', [HolidayController::class, 'update'])->name('holiday.update');
+
+Route::delete('/holiday/delete/{id}', [HolidayController::class, 'destroy'])->name('holiday.delete');

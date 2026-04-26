@@ -257,6 +257,19 @@
                     @endif
                 </a>
             </li>
+         
+             <li class="nav-item {{ Route::currentRouteName() == 'holiday.index' ? 'active open' : '' }}">
+                {{-- Đảm bảo bạn đặt tên route là 'holiday-config' trong web.php --}}
+                <a href="{{ route('holiday.index') }}" class="nav-link nav-toggle">
+                    <i class="fa fa-bell"></i> {{-- Icon lịch để dễ nhận diện --}}
+                    <span class="title">Cấu hình ngày nghỉ</span>
+
+                    {{-- Mũi tên chỉ thị đang chọn --}}
+                    @if (Route::currentRouteName() == 'holiday.index')
+                    <span class="selected"></span>
+                    @endif
+                </a>
+            </li>
         </ul>
     </div>
 </div>
