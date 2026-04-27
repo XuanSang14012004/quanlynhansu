@@ -313,7 +313,7 @@ Route::delete('/notification/delete/{id}',
 Route::post('/api/tasks/{id}/not-done', [TaskController::class, 'notDone']);
 
 ///cấu hình ngày nghi
-use App\Http\Controllers\Api\HolidayController;
+use App\Http\Controllers\HolidayController;
 
 Route::get('/holiday-config', [HolidayController::class, 'indexView'])->name('holiday.index');
 

@@ -248,7 +248,7 @@
             <li class="nav-item {{ Route::currentRouteName() == 'notification-config' ? 'active open' : '' }}">
                 {{-- Đảm bảo bạn đặt tên route là 'notification-config' trong web.php --}}
                 <a href="{{ route('notification-config') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-bell"></i> {{-- Icon lịch để dễ nhận diện --}}
+                    <i class="fa fa-bell"></i> {{-- Icon để dễ nhận diện --}}
                     <span class="title">Cấu hình thông báo</span>
 
                     {{-- Mũi tên chỉ thị đang chọn --}}
@@ -261,7 +261,7 @@
              <li class="nav-item {{ Route::currentRouteName() == 'holiday.index' ? 'active open' : '' }}">
                 {{-- Đảm bảo bạn đặt tên route là 'holiday-config' trong web.php --}}
                 <a href="{{ route('holiday.index') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-bell"></i> {{-- Icon lịch để dễ nhận diện --}}
+                    <i class="fa fa-umbrella"></i> {{-- Icon để dễ nhận diện --}}
                     <span class="title">Cấu hình ngày nghỉ</span>
 
                     {{-- Mũi tên chỉ thị đang chọn --}}
