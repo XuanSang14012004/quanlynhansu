@@ -322,3 +322,4 @@ Route::post('/holiday/store', [HolidayController::class, 'store'])->name('holida
 Route::put('/holiday/update/{id}', [HolidayController::class, 'update'])->name('holiday.update');
 
 Route::delete('/holiday/delete/{id}', [HolidayController::class, 'destroy'])->name('holiday.delete');
+Route::get('/holiday-config/calendar', [HolidayController::class, 'getForCalendar'])->name('holiday.calendar');

@@ -142,6 +142,47 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="holidayDetailModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="border-radius: 10px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+
+            <div class="modal-header" style="background: #fff5f5; border-bottom: 2px solid #fed7d7; border-radius: 10px 10px 0 0; padding: 16px 20px;">
+                <h4 style="margin: 0; color: #c53030; font-size: 16px; font-weight: 700;">
+                     Thông tin ngày nghỉ
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" style="color: #c53030;">&times;</button>
+            </div>
+
+            <div class="modal-body" style="padding: 20px;">
+
+                <div style="margin-bottom: 14px;">
+                    <div style="font-size: 12px; color: #999; margin-bottom: 4px;">Tên ngày nghỉ</div>
+                    <div id="hdName" style="font-size: 15px; font-weight: 700; color: #2c3e50;"></div>
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <div style="font-size: 12px; color: #999; margin-bottom: 4px;">Thời gian</div>
+                    <div id="hdDate" style="font-size: 14px; color: #e53e3e; font-weight: 600;"></div>
+                </div>
+
+                <div>
+                    <div style="font-size: 12px; color: #999; margin-bottom: 4px;">Số ngày nghỉ</div>
+                    <div id="hdDays" style="font-size: 14px; color: #2c3e50; font-weight: 600;"></div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer" style="border-top: 1px solid #fed7d7; padding: 12px 20px; border-radius: 0 0 10px 10px;">
+                <button type="button" class="btn btn-sm" data-dismiss="modal"
+                    style="background: #fed7d7; color: #c53030; border: none; font-weight: 600; padding: 6px 16px; border-radius: 6px;">
+                    Đóng
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 @endsection
 
 
@@ -268,7 +309,7 @@
         max-width: 250px;
         word-break: break-word;
     }
-    
+
 
     #dayTasksModal td:nth-child(2) {
         white-space: normal;
@@ -362,6 +403,7 @@
 <script>
     window.BASE_URL = window.location.origin + '/datatech/public';
     let tasks = [];
+    let holidays = [];
     let today = new Date();
     let currentViewMonth = today.getMonth(); // Lưu tháng đang hiển thị trên UI (0 - 11)
     let currentViewYear = today.getFullYear(); // Lưu năm đang hiển thị trên UI
@@ -372,11 +414,16 @@
 
     async function fetchTasks() {
         try {
-            const response = await fetch(`${window.BASE_URL}/api/calendar-tasks`);
-            tasks = await response.json();
+            const [taskRes, holidayRes] = await Promise.all([
+                fetch(`${window.BASE_URL}/api/calendar-tasks`),
+                fetch(`${window.BASE_URL}/holiday-config/calendar`)
+            ]);
+            tasks = await taskRes.json();
+            holidays = await holidayRes.json();
         } catch (error) {
             console.error('Lỗi lấy dữ liệu:', error);
             tasks = [];
+            holidays = [];
         }
         renderCalendar();
     }
@@ -418,27 +465,53 @@
         for (let day = 1; day <= daysInMonth; day++) {
             const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-            // Kiểm tra xem ngày đang vẽ có phải là "Hôm nay" ngoài đời thực không
             const isToday = (day === today.getDate() && month === today.getMonth() && year === today.getFullYear());
-            const dayStyle = isToday ? 'background: #eef2fe; border: 2px solid #667eea;' : '';
-            const numberStyle = isToday ? 'background: #667eea; color: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;' : '';
+
+            // ← THÊM: Tìm ngày nghỉ khớp với ngày đang vẽ
+            const holiday = holidays.find(h => dateString >= h.start_date && dateString <= h.end_date);
+
+            // Style ô ngày
+            let dayStyle = '';
+            let numberStyle = '';
+
+            if (isToday) {
+                dayStyle = 'background: #eef2fe; border: 2px solid #667eea;';
+                numberStyle = 'background: #667eea; color: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;';
+            } else if (holiday) {
+                // ← THÊM: Màu đỏ nhạt cho ngày nghỉ
+                dayStyle = 'background: #fff5f5; border: 1px solid #fed7d7;';
+                numberStyle = 'color: #e53e3e; font-weight: 700;';
+            }
+
+            // ← THÊM: Badge tên ngày nghỉ
+            const holidayBadge = holiday ?
+                `<div onclick="openHolidayDetail(${holiday.id})" style="
+            font-size: 11px;
+            color: #c53030;
+            background: #fed7d7;
+            border-radius: 4px;
+            padding: 2px 6px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-left: 3px solid #e53e3e;
+            cursor: pointer;
+        " title="${holiday.name}"> ${holiday.name}</div>` :
+                '';
 
             const dayTasks = tasks.filter(t => dateString >= t.startDate && dateString <= t.endDate);
-
-            let tasksHtml = '';
-
-            if (dayTasks.length > 0) {
-                tasksHtml = `
-        <div class="task-count" onclick="openDayTasks('${dateString}')">
-            +${dayTasks.length} công việc
-        </div>
-    `;
-            }
+            const tasksHtml = dayTasks.length > 0 ?
+                `<div class="task-count" onclick="openDayTasks('${dateString}')">+${dayTasks.length} công việc</div>` :
+                '';
 
             html += `
         <div class="calendar-day" style="${dayStyle}">
             <div class="day-number" style="${numberStyle}">${day}</div>
-            <div class="task-list">${tasksHtml}</div>
+            <div class="task-list">
+                ${holidayBadge}
+                ${tasksHtml}
+            </div>
         </div>`;
         }
 
@@ -532,6 +605,35 @@
             const modal = new bootstrap.Modal(document.getElementById('taskDetailModal'));
             modal.show();
         }
+    }
+
+    ///
+    function openHolidayDetail(holidayId) {
+        const h = holidays.find(h => h.id == holidayId);
+        if (!h) return;
+
+        // Format ngày DD/MM/YYYY
+        const formatDate = (str) => {
+            const d = (str || '').substring(0, 10).split('-');
+            return d.length === 3 ? `${d[2]}/${d[1]}/${d[0]}` : str;
+        };
+
+        // Tính số ngày
+        const start = new Date((h.start_date || '').substring(0, 10));
+        const end = new Date((h.end_date || '').substring(0, 10));
+        const days = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
+        document.getElementById('hdName').innerText = h.name;
+        document.getElementById('hdDays').innerText = days + ' ngày';
+
+        // Hiển thị ngày: nếu start == end thì chỉ hiện 1 ngày
+        const startStr = formatDate(h.start_date);
+        const endStr = formatDate(h.end_date);
+        document.getElementById('hdDate').innerText = startStr === endStr ?
+            startStr :
+            `${startStr} — ${endStr}`;
+
+        $('#holidayDetailModal').modal('show');
     }
 
     // HÀM XỬ LÝ KHI BẤM NÚT "HOÀN THÀNH"

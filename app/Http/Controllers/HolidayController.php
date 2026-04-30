@@ -80,4 +80,12 @@ class HolidayController extends Controller
 
         return view('holiday.holiday_config', compact('holidays', 'perPage', 'year'));
     }
+    public function getForCalendar()
+    {
+        return response()->json(
+            Holiday::select('id', 'name', 'start_date', 'end_date')
+                ->orderBy('start_date')
+                ->get()
+        );
+    }
 }

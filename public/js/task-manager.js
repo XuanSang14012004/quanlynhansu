@@ -274,38 +274,43 @@ function loadUsers() {
         .then(users => {
             let filterSelect = document.getElementById('assigneeFilter');
             let formSelect = document.getElementById('taskAssignee');
-            // let html = '';
-            let html = '<option value="all">Tất cả</option>';
+
+            let filterHtml = '<option value="all">Tất cả</option>';
+            let formHtml = '<option value="all_users">Tất cả</option>';
 
             users.forEach(u => {
-                html += `<option value="${u.id}">${u.name}</option>`;
+                filterHtml += `<option value="${u.id}">${u.name}</option>`;
+                formHtml += `<option value="${u.id}">${u.name}</option>`;
             });
-            if (filterSelect) filterSelect.innerHTML = '' + html;
+
+            if (filterSelect) {
+                filterSelect.innerHTML = filterHtml;
+                $('#assigneeFilter').trigger('change.select2');
+            }
+
             if (formSelect) {
-                formSelect.innerHTML = html;
+                formSelect.innerHTML = formHtml;
+                $('#taskAssignee').trigger('change.select2');
             }
         })
         .catch(err => console.error(err));
 
-    //xử lý chọn tất cả
-    $('#taskAssignee').on('change', function () {
+    $('#taskAssignee').off('change.selectAllUsers').on('change.selectAllUsers', function () {
         let values = $(this).val() || [];
 
         if (values.includes('all_users')) {
+            let allIds = $('#taskAssignee option')
+                .map(function () {
+                    return this.value;
+                })
+                .get()
+                .filter(val => val !== 'all_users');
 
-            let allIds = [];
-
-            $('#taskAssignee option').each(function () {
-                let val = $(this).val();
-                if (val !== 'all_users') {
-                    allIds.push(val);
-                }
-            });
-
-            $(this).val(allIds).trigger('change.select2');
+            $(this).val(allIds).trigger('change');
         }
     });
 }
+
 
 
 // =============================================================
@@ -330,9 +335,27 @@ function saveTask() {
 
     // Lấy mảng người thực hiện
     let assignees = $('#taskAssignee').val() || [];
-    assignees = assignees.filter(id => id !== 'all_users').map(id => parseInt(id)).filter(id => !isNaN(id));
-    if (!assignees.length) { alert('Vui lòng chọn ít nhất 1 người thực hiện'); return; }
+
+    if (assignees.includes('all_users')) {
+        assignees = $('#taskAssignee option')
+            .map(function () {
+                return this.value;
+            })
+            .get()
+            .filter(id => id !== 'all_users');
+    }
+
+    assignees = assignees
+        .map(id => parseInt(id))
+        .filter(id => !isNaN(id));
+
+    if (!assignees.length) {
+        alert('Vui lòng chọn ít nhất 1 người thực hiện');
+        return;
+    }
+
     assignees.forEach(uid => formData.append('assignees[]', uid));
+
 
     // Upload file đính kèm (nếu có)
     const attachmentInput = document.getElementById('taskAttachment');
@@ -356,20 +379,20 @@ function saveTask() {
         headers: { 'X-CSRF-TOKEN': csrfToken },
         body: formData
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            hideModalSafely('taskModal');
-            loadTasks();
-            alert('Thành công!');
-        } else {
-            alert('Lỗi: ' + (data.message || 'Kiểm tra lại dữ liệu'));
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        alert('Lỗi API: ' + err.message);
-    });
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                hideModalSafely('taskModal');
+                loadTasks();
+                alert('Thành công!');
+            } else {
+                alert('Lỗi: ' + (data.message || 'Kiểm tra lại dữ liệu'));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Lỗi API: ' + err.message);
+        });
 }
 function executeDelete() {
     let id = document.getElementById('deleteTaskId').value;
