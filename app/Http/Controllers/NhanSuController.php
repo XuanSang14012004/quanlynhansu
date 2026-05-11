@@ -54,34 +54,36 @@ class NhanSuController extends Controller
         ]);
     }
 
-   public function store(Request $request)
+    public function store(Request $request)
     {
         // 1. Validate (Bỏ kiểm tra trùng email với users, bỏ bắt buộc password)
         $request->validate([
-            'ma_nv'   => 'unique:nhan_sus',
-            'so_cmnd' => 'unique:nhan_sus',
-            'email'   => 'nullable|email' // Chỉ kiểm tra đúng định dạng email (nếu có nhập)
+            'ma_nv'      => 'unique:nhan_sus',
+            'so_cmnd'    => 'unique:nhan_sus',
+            'email'      => 'nullable|email',
+            'ngay_sinh'  => 'required|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d')
         ], [
             'ma_nv.unique'   => 'Mã nhân viên đã tồn tại',
             'so_cmnd.unique' => 'Số CMND đã tồn tại',
-            'email.email'    => 'Định dạng Email không hợp lệ'
+            'email.email'    => 'Định dạng Email không hợp lệ',
+            'ngay_sinh.before_or_equal' => 'Nhân sự phải đủ 18 tuổi',
+            'ngay_sinh.required' => 'Vui lòng nhập ngày sinh'
         ]);
 
         try {
-            // Chỉ lưu Nhân Sự (Hàm saveNhanSu đã xử lý lưu email vào bảng nhan_sus)
             $nhan_su = NhanSu::saveNhanSu(0, $request->all());
 
-            Log::info('Người dùng ID:'.Auth::user()->id.' đã thêm nhân sự: '.$nhan_su->ho_ten);
+            Log::info('Người dùng ID:' . Auth::user()->id . ' đã thêm nhân sự: ' . $nhan_su->ho_ten);
+
             return redirect()->route('nhan_su.index')
-                             ->with('status_success', 'Thêm mới nhân sự thành công!');
-        } 
-        catch (\Exception $e) {
+                ->with('status_success', 'Thêm mới nhân sự thành công!');
+        } catch (\Exception $e) {
             Log::error($e);
+
             return redirect()->route('nhan_su.index')
-                             ->with('status_error', 'Lỗi: ' . $e->getMessage());
+                ->with('status_error', 'Lỗi: ' . $e->getMessage());
         }
     }
-
     public function edit($id)
     {
 
@@ -99,49 +101,60 @@ class NhanSuController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'ma_nv'        => 'unique:nhan_sus,ma_nv,' . $id,
-            'so_cmnd'        => 'unique:nhan_sus,so_cmnd,' . $id
+            'ma_nv'      => 'unique:nhan_sus,ma_nv,' . $id,
+            'so_cmnd'    => 'unique:nhan_sus,so_cmnd,' . $id,
+            'ngay_sinh'  => 'required|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d')
         ], [
-            'ma_nv.unique' => '"Mã nhân viên" đã tồn tại',
-            'so_cmnd.unique' => '"Số CMND" đã tồn tại'
+            'ma_nv.unique'   => '"Mã nhân viên" đã tồn tại',
+            'so_cmnd.unique' => '"Số CMND" đã tồn tại',
+            'ngay_sinh.before_or_equal' => 'Nhân sự phải đủ 18 tuổi',
+            'ngay_sinh.required' => 'Vui lòng nhập ngày sinh'
         ]);
 
         try {
             $nhan_su = NhanSu::saveNhanSu($id, $request->all());
-            Log::info('Người dùng ID:' . Auth::user()->id . ' đã sửa nhân sự ID:' . $nhan_su->id . '-' . $nhan_su->ho_ten);
-            return redirect()->route('nhan_su.index')->with('status_success', 'Chỉnh sửa nhân sự thành công!');
+
+            Log::info(
+                'Người dùng ID:' . Auth::user()->id .
+                    ' đã sửa nhân sự ID:' . $nhan_su->id . '-' . $nhan_su->ho_ten
+            );
+
+            return redirect()->route('nhan_su.index')
+                ->with('status_success', 'Chỉnh sửa nhân sự thành công!');
         } catch (\Exception $e) {
             Log::error($e);
-            return redirect()->route('nhan_su.index')->with('status_error', 'Xảy ra lỗi khi sửa nhân sự!');
+
+            return redirect()->route('nhan_su.index')
+                ->with('status_error', 'Xảy ra lỗi khi sửa nhân sự!');
         }
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         // 1. Tìm nhân sự cần xóa
         $nhan_su = NhanSu::findOrFail($id);
         $name = $nhan_su->ho_ten;
         $email = $nhan_su->email; // Lấy email để tìm user xóa theo
 
         DB::beginTransaction(); // Bắt đầu giao dịch
-        try{
+        try {
             // 2. Xóa nhân sự (Bảng nhan_sus)
             $nhan_su->delete();
-            
+
             // 3. Xóa tài khoản User tương ứng (Bảng users)
-            if($email) {
+            if ($email) {
                 // Tìm user có email trùng với nhân sự vừa xóa
                 $user = User::where('email', $email)->first();
-                if($user) {
+                if ($user) {
                     $user->delete(); // Xóa tài khoản
                 }
             }
 
             DB::commit(); // Chốt giao dịch
 
-            Log::info('Người dùng ID:'.Auth::user()->id.' đã xóa nhân sự và tài khoản: '.$name);
+            Log::info('Người dùng ID:' . Auth::user()->id . ' đã xóa nhân sự và tài khoản: ' . $name);
             return redirect()->route('nhan_su.index')->with('status_success', 'Xóa nhân sự và tài khoản thành công!');
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack(); // Hoàn tác nếu lỗi
             Log::error($e);
             return redirect()->route('nhan_su.index')->with('status_error', 'Lỗi: ' . $e->getMessage());
